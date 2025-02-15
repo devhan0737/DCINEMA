@@ -14,7 +14,6 @@ const Testing = () => {
       )
       .then((response) => {
         setData(response.data.response.body.items.item);
-        // console.log(response.data.response.body.items);
       })
       .catch((error) => {
         console.log("Error:", error);
@@ -28,7 +27,18 @@ const Testing = () => {
       <h1>API 데이터</h1>
       <ul>
         {data.map((item, index) => (
-          <li key={index}>{item.TITLE}</li>
+          <div key={index}>
+            <div>
+              <strong>제목:</strong> {item.TITLE}
+            </div>
+            <div>
+              <strong>출연진:</strong>{" "}
+              {item.ACTOR[0]
+                ? item.ACTOR.split(",").slice(0, 2).join(", ") // 최대 5명까지만 표시
+                : "출연진 정보 없음"}
+            </div>
+            <div>{item.IMAGE_OBJECT}</div>
+          </div>
         ))}
       </ul>
     </div>

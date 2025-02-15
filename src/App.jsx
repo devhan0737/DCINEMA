@@ -1,10 +1,12 @@
-import Testing from "../components/Testing";
+import Spotify from "../components/Spotify";
+// import Testing from "../components/Testing";
 import "./../css/basic.css";
 
 function App() {
   return (
     <>
-      <Testing />
+      {/* <Testing /> */}
+      <Spotify />
     </>
   );
 }
