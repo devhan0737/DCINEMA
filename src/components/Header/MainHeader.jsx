@@ -1,17 +1,17 @@
 import styled from "styled-components";
-import { theme } from "../../theme";
-import MainNav from "./MainNav";
+import { theme } from "../../assets/theme";
 
 const MainHeader = () => {
   return (
     <Container>
       <MainLogo>
-        <a href="#">Free Movie</a>
+        <a href="#">
+          <img src={theme.image.mainLogo} alt="" />
+        </a>
       </MainLogo>
-      <MainNav />
       <User>
         <a href="#">
-          <img src={theme.image.userIcon} alt="User Icon" />
+          <img src={theme.image.userIconWhite} alt="User Icon" />
         </a>
       </User>
     </Container>
@@ -22,30 +22,35 @@ export default MainHeader;
 
 const Container = styled.header`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 50px;
+  padding: 0 20px;
   box-sizing: border-box;
-  background-color: #ccc;
+  background-color: #333333;
 `;
 const MainLogo = styled.h1`
   display: flex;
   align-items: center;
-  font-size: 1.8rem;
+  object-fit: contain;
+  img {
+    height: 20px;
+  }
 `;
 const User = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
   height: 40px;
   a {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
     height: 100%;
+  }
+  svg {
+    fill: white;
   }
   img {
     width: 24px;

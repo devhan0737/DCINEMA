@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import "./assets/css/basic.css";
+import "./assets/style/basic.css";
 import axios from "axios";
-import MainHeader from "./assets/components/Header/MainHeader";
+import MainHeader from "./components/Header/MainHeader";
 
 function App() {
   // const thxNomad = "인증키도 없이 활용가능하게 해주신 노마드코더 만세!!"
