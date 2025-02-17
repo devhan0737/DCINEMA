@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import API from "./../../api/api";
 
 const Contents = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(`https://nomad-movies.nomadcoders.workers.dev/movies`)
+    API.getPopularMovies()
       .then((response) => {
         setData(response.data);
       })
@@ -15,6 +15,8 @@ const Contents = () => {
         console.log("에러 출력 : ", error);
       });
   }, []);
+
+  console.log(data);
 
   return (
     <Container>
@@ -64,11 +66,25 @@ const MovieCard = styled.div`
 `;
 
 const MovieInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   padding: 15px;
-`;
+  h2 {
+    text-align: left;
+    font-weight: 900;
+  }
+  p {
+    text-align: left;
 
-const Image = styled.img`
-  width: 100%;
-  height: auto;
-  object-fit: cover;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* 3줄까지만 표시 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.6; /* 줄 간격 */
+    max-height: 4.8em; /* 3줄에 맞는 높이 */
+    word-wrap: break-word; /* 단어가 너무 길어지면 줄 바꿈 */
+    hyphens: auto; /* 단어가 긴 경우 자동으로 하이픈을 넣어줌 (지원되는 경우) */
+  }
 `;
