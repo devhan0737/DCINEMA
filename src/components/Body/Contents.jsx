@@ -1,36 +1,74 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import API from "./../../api/api";
+import API from "../../api/api";
 
 const Contents = () => {
-  const [data, setData] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1); // 현재 페이지 수
+  const totalPost = 40; // 총 게시물 수
+  const pageRange = 5; // 한 페이지에 보여줄 갯수
+  const btnRange = 5; // 한 번에 보여줄 버튼 갯수
+
+  const currentSet = Math.ceil(page / btnRange); // 현재 버튼이 몇 번째 세트인지 나타내는 수
+  const startPage = (currentSet - 1) * btnRange + 1; // 현재 보여질 버튼의 첫번째 수
+
+  const endPage = startPage + btnRange - 1; // 현재 보여질 끝 버튼의 수
+  const totalSet = Math.ceil(Math.ceil(totalPost / pageRange) / btnRange); // 전체 버튼 세트 수
+
+  const startPost = (page - 1) * pageRange + 1; // 시작 게시물 번호
+  const endPost = startPost + pageRange - 1; // 끝 게시물 번호
 
   useEffect(() => {
     API.getPopularMovies()
       .then((response) => {
-        setData(response.data);
+        setPosts(response.data);
       })
       .catch((error) => {
         console.log("에러 출력 : ", error);
       });
   }, []);
 
-  console.log(data);
+  console.log(posts);
 
   return (
     <Container>
-      <Content>
-        {data.map((item) => (
-          <MovieCard key={item.id}>
-            <img src={item.poster_path} alt={item.title} />
+      <MovieCardWrapper>
+        {posts.slice(startPost - 1, endPost).map((post) => (
+          <MovieCard key={post.id}>
+            <img src={post.poster_path} alt={post.title} />
             <MovieInfo>
-              <h2>{item.title}</h2>
-              <p>{item.overview}</p>
+              <h3>{post.title}</h3>
+              <p>{post.overview}</p>
             </MovieInfo>
           </MovieCard>
         ))}
-      </Content>
+      </MovieCardWrapper>
+
+      <Nav>
+        {currentSet > 1 && (
+          <Button onClick={() => setPage(startPage - 1)} $active={false}>
+            &lt;
+          </Button>
+        )}
+        {Array(btnRange)
+          .fill(startPage)
+          .map((_, i) => {
+            return (
+              <Button
+                key={i}
+                onClick={() => setPage(startPage + i)}
+                $active={page === startPage + i}
+              >
+                {startPage + i}
+              </Button>
+            );
+          })}
+        {totalSet > currentSet && (
+          <Button onClick={() => setPage(endPage + 1)} $active={false}>
+            &gt;
+          </Button>
+        )}
+      </Nav>
     </Container>
   );
 };
@@ -38,18 +76,43 @@ const Contents = () => {
 export default Contents;
 
 const Container = styled.div`
+  max-width: 93%;
   width: 100%;
-  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+`;
+const Nav = styled.nav`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+`;
+const Button = styled.button`
+  border: none;
+  font-weight: ${(props) => (props.$active ? "bold" : "normal")};
 `;
 
-const Content = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+const MovieCardWrapper = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); // 기본적으로 3개의 열로 구성
   gap: 20px;
-  justify-content: center;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(
+      2,
+      1fr
+    ); // 화면이 1200px 이하일 때 2개의 열로 변경
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(
+      1,
+      1fr
+    ); // 화면이 768px 이하일 때 1개의 열로 변경
+  }
 `;
 
 const MovieCard = styled.div`
@@ -76,15 +139,14 @@ const MovieInfo = styled.div`
   }
   p {
     text-align: left;
-
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3; /* 3줄까지만 표시 */
+    -webkit-line-clamp: 3;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.6; /* 줄 간격 */
-    max-height: 4.8em; /* 3줄에 맞는 높이 */
-    word-wrap: break-word; /* 단어가 너무 길어지면 줄 바꿈 */
-    hyphens: auto; /* 단어가 긴 경우 자동으로 하이픈을 넣어줌 (지원되는 경우) */
+    line-height: 1.6;
+    max-height: 4.8em;
+    word-wrap: break-word;
+    hyphens: auto;
   }
 `;
